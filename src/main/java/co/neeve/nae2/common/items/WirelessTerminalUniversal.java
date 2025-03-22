@@ -9,8 +9,7 @@ import appeng.util.Platform;
 import co.neeve.nae2.NAE2;
 import co.neeve.nae2.common.api.config.WirelessTerminalType;
 import co.neeve.nae2.common.helpers.UniversalTerminalHelper;
-import com.glodblock.github.inventory.GuiType;
-import com.glodblock.github.util.Util;
+import com.glodblock.github.handler.AEGuiBridgeHandler;
 import com.mekeng.github.common.container.handler.AEGuiBridge;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -42,6 +41,7 @@ public class WirelessTerminalUniversal extends ToolWirelessTerminal {
             case CRAFTING -> GuiBridge.GUI_WIRELESS_CRAFTING_TERMINAL;
             case PATTERN -> GuiBridge.GUI_WIRELESS_PATTERN_TERMINAL;
             case INTERFACE -> GuiBridge.GUI_WIRELESS_INTERFACE_TERMINAL;
+            case FLUID_PATTERN -> GuiWrapper.INSTANCE.wrap(AEGuiBridgeHandler.WIRELESS_FLUID_PATTERN_TERMINAL);
             default -> GuiBridge.GUI_WIRELESS_TERM;
         };
     }
@@ -75,14 +75,7 @@ public class WirelessTerminalUniversal extends ToolWirelessTerminal {
             return new ActionResult(EnumActionResult.SUCCESS, changeMode(stack, player, tagCompound));
         }
 
-        switch (WIRELESS_TERMINAL_TYPE_LIST.get(Platform.openNbtData(stack).getInteger("type"))) {
-            case FLUID_PATTERN -> {
-                if (UniversalTerminalHelper.isModuleValid(WirelessTerminalType.FLUID_PATTERN)) {
-                    Util.openWirelessTerminal(player.getHeldItem(hand), hand == EnumHand.MAIN_HAND ? player.inventory.currentItem : 40, false, w, player, GuiType.WIRELESS_FLUID_PATTERN_TERMINAL);
-                }
-            }
-            default -> AEApi.instance().registries().wireless().openWirelessTerminalGui(stack, w, player);
-        }
+        AEApi.instance().registries().wireless().openWirelessTerminalGui(stack, w, player);
 
         return new ActionResult(EnumActionResult.SUCCESS, stack);
     }
