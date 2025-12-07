@@ -9,6 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,13 +19,16 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class UniversalTerminalHelper {
-    private final static boolean isMekELoaded = Platform.isModLoaded("mekeng");
     public static final List<ItemStack> wirelessTerminals = new ArrayList<>();
     public static final List<ItemStack> terminals = new ArrayList<>();
     public static final List<WirelessTerminalType> WIRELESS_TERMINAL_TYPE_LIST = Arrays.asList(WirelessTerminalType.values());
 
     private static final boolean isMekEngLoaded = Platform.isModLoaded("mekeng");
     private static final boolean isAE2FCLoaded = Platform.isModLoaded("ae2fc");
+    private static Item wireless_gas_terminal = ForgeRegistries.ITEMS.getValue(new ResourceLocation("mekeng", "wireless_gas_terminal"));
+    private static Item gas_terminal = ForgeRegistries.ITEMS.getValue(new ResourceLocation("mekeng", "gas_terminal"));
+    private static Item wireless_fluid_pattern_terminal = ForgeRegistries.ITEMS.getValue(new ResourceLocation("ae2fc", "wireless_fluid_pattern_terminal"));
+    private static Item part_fluid_pattern_terminal = ForgeRegistries.ITEMS.getValue(new ResourceLocation("ae2fc", "part_fluid_pattern_terminal"));
 
     static {
         wirelessTerminals.add(AEApi.instance().definitions().items().wirelessTerminal().maybeStack(1).orElse(null));
@@ -36,13 +42,21 @@ public class UniversalTerminalHelper {
         terminals.add(AEApi.instance().definitions().parts().fluidTerminal().maybeStack(1).orElse(null));
 
         if (isMekEngLoaded) {
-            wirelessTerminals.add(new ItemStack(ItemAndBlocks.WIRELESS_GAS_TERMINAL));
-            terminals.add(new ItemStack(ItemAndBlocks.GAS_TERMINAL));
+            if (wireless_gas_terminal != null) {
+                wirelessTerminals.add(new ItemStack(wireless_gas_terminal));
+            }
+            if (gas_terminal != null) {
+                terminals.add(new ItemStack(gas_terminal));
+            }
         }
 
         if (isAE2FCLoaded) {
-            wirelessTerminals.add(new ItemStack(FCItems.WIRELESS_FLUID_PATTERN_TERMINAL));
-            terminals.add(new ItemStack(FCItems.PART_FLUID_PATTERN_TERMINAL));
+            if (wireless_fluid_pattern_terminal != null) {
+                wirelessTerminals.add(new ItemStack(wireless_fluid_pattern_terminal));
+            }
+            if (part_fluid_pattern_terminal != null) {
+                terminals.add(new ItemStack(part_fluid_pattern_terminal));
+            }
         }
     }
 
@@ -61,12 +75,12 @@ public class UniversalTerminalHelper {
             return true;
 
         if (isMekEngLoaded) {
-            ItemStack wirelessGasTerminal = new ItemStack(ItemAndBlocks.WIRELESS_GAS_TERMINAL);
+            ItemStack wirelessGasTerminal = new ItemStack(wireless_gas_terminal);
             if (wirelessGasTerminal.getItem() == item && wirelessGasTerminal.getItemDamage() == itemDamage) return true;
         }
 
         if (isAE2FCLoaded) {
-            ItemStack fluidPatternWirelessTerminal = new ItemStack(FCItems.WIRELESS_FLUID_PATTERN_TERMINAL);
+            ItemStack fluidPatternWirelessTerminal = new ItemStack(wireless_fluid_pattern_terminal);
             if (fluidPatternWirelessTerminal.getItem() == item && fluidPatternWirelessTerminal.getItemDamage() == itemDamage) return true;
         }
 
@@ -95,12 +109,12 @@ public class UniversalTerminalHelper {
             return true;
 
         if (isMekEngLoaded) {
-            ItemStack gasTerminal = new ItemStack(ItemAndBlocks.GAS_TERMINAL);
+            ItemStack gasTerminal = new ItemStack(gas_terminal);
             if (gasTerminal.getItem() == item && gasTerminal.getItemDamage() == itemDamage) return true;
         }
 
         if (isAE2FCLoaded) {
-            ItemStack fluidPatternTerminal = new ItemStack(FCItems.PART_FLUID_PATTERN_TERMINAL);
+            ItemStack fluidPatternTerminal = new ItemStack(part_fluid_pattern_terminal);
             if (fluidPatternTerminal.getItem() == item && fluidPatternTerminal.getItemDamage() == itemDamage) return true;
         }
 
@@ -179,24 +193,24 @@ public class UniversalTerminalHelper {
 
         //MekEng Integration
         if (isMekEngLoaded) {
-            ItemStack gasTerminal = new ItemStack(ItemAndBlocks.GAS_TERMINAL);
+            ItemStack gasTerminal = new ItemStack(gas_terminal);
             if (gasTerminal.getItem() == item && gasTerminal.getItemDamage() == itemDamage) {
                 return WirelessTerminalType.GAS;
             }
 
-            ItemStack wirelessGasTerminal = new ItemStack(ItemAndBlocks.WIRELESS_GAS_TERMINAL);
+            ItemStack wirelessGasTerminal = new ItemStack(wireless_gas_terminal);
             if (wirelessGasTerminal.getItem() == item && wirelessGasTerminal.getItemDamage() == itemDamage) {
                 return WirelessTerminalType.GAS;
             }
         }
 
         if (isAE2FCLoaded) {
-            ItemStack fluidPatternTerminal = new ItemStack(FCItems.PART_FLUID_PATTERN_TERMINAL);
+            ItemStack fluidPatternTerminal = new ItemStack(part_fluid_pattern_terminal);
             if (fluidPatternTerminal.getItem() == item && fluidPatternTerminal.getItemDamage() == itemDamage) {
                 return WirelessTerminalType.FLUID_PATTERN;
             }
 
-            ItemStack fluidPatternWirelessTerminal = new ItemStack(FCItems.WIRELESS_FLUID_PATTERN_TERMINAL);
+            ItemStack fluidPatternWirelessTerminal = new ItemStack(wireless_fluid_pattern_terminal);
             if (fluidPatternWirelessTerminal.getItem() == item && fluidPatternWirelessTerminal.getItemDamage() == itemDamage) {
                 return WirelessTerminalType.FLUID_PATTERN;
             }
